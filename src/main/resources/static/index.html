@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>啾咪主页</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="layui.all.js"></script>
+    <link rel="stylesheet" href="css/layui.css">
+</head>
+<body>
+<fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;padding: 20px">
+    <legend>控制面板</legend>
+    <div>
+        <button id="light" class="layui-btn" style="width: 100%;height: 100px">灯光按钮</button>
+    </div>
+</fieldset>
+<script>
+    var $;
+    layui.use(['jquery'], function () {
+        $ = layui.jquery;
+    });
+
+    $(function () {
+        var light = $('#light');
+
+        $.ajax({
+            url: '/status/' + getQueryString('token'),
+            type: 'get',
+            data: {},
+            dataType: 'json',
+            error: function () {
+                alert('服务器连接失败');
+            },
+            success: function (data) {
+                if (data.status == 0) {
+                    var message = data.message;
+                    if (message == 'on') {
+                        light.removeClass('layui-btn-primary');
+                    } else {
+                        light.addClass('layui-btn-primary');
+                    }
+                } else {
+                    alert('未传入密码');
+                }
+            }
+        });
+
+        light.click(function () {
+            $.ajax({
+                url: '/light/' + getQueryString('token'),
+                type: 'get',
+                data: {},
+                dataType: 'json',
+                error: function () {
+                    alert('服务器连接失败');
+                },
+                success: function (data) {
+                    if (data.status == 0) {
+                        var message = data.message;
+                        if (message == 'on') {
+                            light.removeClass('layui-btn-primary');
+                        } else {
+                            light.addClass('layui-btn-primary');
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+</script>
+</body>
+</html>
